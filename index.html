@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>اختبار تفاعلي: الانتباه والتركيز في المجال الرياضي</title>
+<style>
+:root{--ink:#172033;--muted:#64748b;--primary:#2457d6;--primary2:#163eaa;--good:#16804a;--bad:#b42318;--line:#dce4f0}
+*{box-sizing:border-box}body{margin:0;font-family:Tahoma,Arial,sans-serif;background:linear-gradient(135deg,#edf3ff,#f8fafc);color:var(--ink);line-height:1.8}
+.wrap{max-width:900px;margin:28px auto;padding:16px}.hero{background:linear-gradient(120deg,#172554,#2457d6);color:#fff;border-radius:22px;padding:28px 24px;margin-bottom:18px;box-shadow:0 12px 28px #183a7a24}
+.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.1rem)}.hero p{margin:0;color:#e0eaff}
+.panel,.question{background:#fff;border:1px solid var(--line);border-radius:18px;padding:22px;margin:16px 0;box-shadow:0 6px 20px #14274a0a}
+label{display:block;font-weight:700;margin:10px 0 5px}input[type=text]{width:100%;padding:13px 14px;border:1px solid #c8d3e3;border-radius:10px;font-size:1rem}
+button{border:0;border-radius:11px;background:var(--primary);color:white;padding:12px 20px;font-size:1rem;font-weight:700;cursor:pointer}button:hover{background:var(--primary2)}button.secondary{background:#e8eefb;color:#1d3e88}button:disabled{opacity:.45;cursor:not-allowed}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}.muted{color:var(--muted);font-size:.95rem}.hidden{display:none!important}
+.progress{height:9px;background:#e5eaf3;border-radius:20px;overflow:hidden;margin:12px 0 4px}.bar{height:100%;width:0;background:#3974f6;transition:width .2s}
+.qtop{display:flex;justify-content:space-between;gap:12px;align-items:center;color:var(--muted);font-size:.92rem}.question h2{font-size:1.18rem;line-height:1.7;margin:10px 0 15px}
+.option{display:flex;gap:10px;align-items:flex-start;padding:12px 13px;border:1px solid var(--line);border-radius:12px;margin:9px 0;cursor:pointer;background:#fff}.option:hover{border-color:#8eabf7;background:#f7f9ff}.option input{margin-top:7px;accent-color:var(--primary);flex-shrink:0}.option.selected{border-color:var(--primary);background:#eef3ff}
+.feedback{margin-top:14px;border-radius:12px;padding:12px 14px}.feedback.good{background:#e8f7ee;color:#12663a}.feedback.bad{background:#fff0ef;color:#98231b}
+.result{text-align:center}.score{font-size:2.3rem;font-weight:800;color:var(--primary);margin:5px}.review-item{text-align:right;border-bottom:1px solid var(--line);padding:12px 0}.correct{color:var(--good);font-weight:700}.wrong{color:var(--bad);font-weight:700}
+footer{text-align:center;color:var(--muted);padding:18px;font-size:.9rem}
+@media(max-width:600px){.wrap{padding:10px;margin:12px auto}.hero,.panel,.question{padding:17px}.qtop{align-items:flex-start}}
+@media print{body{background:white}.hero{background:#fff;color:#111;box-shadow:none;border:1px solid #ccc}.hero p{color:#333}.no-print,button{display:none!important}.panel,.question{box-shadow:none;break-inside:avoid}.hidden{display:block!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="hero">
+<h1>اختبار تفاعلي: الانتباه والتركيز في المجال الرياضي</h1>
+<p>10 أسئلة اختيار من متعدد — مع تصحيح فوري وشرح للإجابات</p>
+<p style="color:#dbe7ff;margin-top:8px">أدخل بياناتك، ثم اختر إجابة واحدة لكل سؤال.</p>
+</header>
+<section class="panel" id="startPanel">
+<h2 style="margin-top:0">بيانات الطالب</h2>
+<form id="studentForm" novalidate>
+<label for="studentName">اسم الطالب</label><input id="studentName" type="text" autocomplete="name" placeholder="اكتب الاسم بالكامل">
+<label for="studentId">الرقم الأكاديمي</label><input id="studentId" type="text" placeholder="اكتب الرقم الأكاديمي">
+<p id="formError" class="hidden" style="color:var(--bad);font-weight:700"></p>
+<div class="row" style="margin-top:18px"><button type="submit">ابدأ الاختبار</button></div>
+</form>
+<p class="muted">النتيجة تظهر على هذا الجهاز فقط، ولا تُرسل بيانات الطلاب إلى أي خادم.</p>
+</section>
+<section id="quizPanel" class="hidden">
+<div class="panel"><div class="row" style="justify-content:space-between"><strong id="welcome"></strong><strong id="counter">السؤال 1 من 10</strong></div><div class="progress"><div class="bar" id="progressBar"></div></div><p class="muted">أكد إجابتك لعرض التغذية الراجعة ثم انتقل للسؤال التالي.</p></div>
+<div class="question">
+<div class="qtop"><span id="topicLabel">الانتباه الرياضي</span><span id="answeredLabel">لم تتم الإجابة</span></div>
+<h2 id="questionText"></h2><div id="options"></div><div id="feedback" class="feedback hidden" aria-live="polite"></div>
+<div class="row" style="justify-content:space-between;margin-top:18px"><button id="prevBtn" class="secondary" type="button">السابق</button><button id="nextBtn" type="button" disabled>تأكيد الإجابة</button></div>
+</div>
+</section>
+<section id="resultPanel" class="panel hidden">
+<div class="result"><h2>انتهى الاختبار</h2><p id="resultStudent"></p><div class="score" id="scoreText"></div><p id="resultMessage"></p></div>
+<div class="row no-print" style="justify-content:center;margin:18px 0"><button type="button" id="reviewBtn">مراجعة الإجابات</button><button type="button" class="secondary" id="printBtn">طباعة النتيجة</button><button type="button" class="secondary" id="restartBtn">إعادة الاختبار</button></div>
+<div id="review" class="hidden"></div>
+</section>
+<footer>اختبار تدريبي مبني على المادة المرفقة عن الانتباه والتركيز والمهارات العقلية في المجال الرياضي.</footer>
+</div>
+<script>
+const questions = [
+{topic:"مفهوم الانتباه",q:"وفق التعريف الوارد في المادة، ما المقصود بالانتباه؟",opts:["تذكر جميع الخبرات السابقة دون اختيار","القدرة على تثبيت الانتباه على مثير مختار لفترة من الزمن","الاستجابة التلقائية لكل المثيرات المحيطة","القدرة على أداء المهارة دون وعي"],a:1,exp:"الانتباه هو القدرة على توجيه الوعي وتثبيته على مثير مختار لمدة زمنية."},
+{topic:"الانتباه والإدراك والتركيز",q:"ما الفرق بين الانتباه والتركيز وفق المادة؟",opts:["الانتباه هو تضييق المجال دائمًا، والتركيز هو إدراك جميع المثيرات","لا يوجد فرق بينهما","التركيز نوع من تضييق الانتباه وتثبيته على مثير معين","الإدراك يعني تجاهل المثيرات الخارجية"],a:2,exp:"التركيز نوع من تضييق الانتباه وتثبيته على مثير محدد، ويعكس القدرة على الاحتفاظ بالانتباه."},
+{topic:"العوامل المؤثرة",q:"أي مما يلي يُعد من المثيرات غير المرتبطة بالأداء وقد تشتت اللاعب؟",opts:["زاوية سقوط الكرة","موضع المنافس في لحظة اللعب","زاوية ضرب المضرب للكرة","ضوضاء الجمهور وصياحه"],a:3,exp:"ضوضاء الجمهور من المثيرات غير المرتبطة مباشرة بالأداء، وقد تؤدي إلى التشتت."},
+{topic:"سعة الانتباه",q:"لاعب الزوجي يتابع موضع الكرة، وحركات المنافسين، والمساحة الخالية، وموقع زميله في الوقت نفسه. هذا مثال على:",opts:["الانتباه الواسع","الانتباه الضيق","الانتباه الداخلي الضيق","قلق الحالة"],a:0,exp:"الانتباه الواسع يعني إدراك العديد من الأحداث أو المثيرات في وقت واحد."},
+{topic:"اتجاه الانتباه",q:"عندما يركز اللاعب على أفكاره ومشاعره الداخلية بدلًا من الأحداث المحيطة، فهذا يسمى:",opts:["الانتباه الخارجي","الانتباه الداخلي","الانتباه الخارجي الواسع","الانتباه الضيق الخارجي"],a:1,exp:"الانتباه الداخلي يتجه إلى أفكار اللاعب ومشاعره وإحساسه بذاته."},
+{topic:"مهارات الانتباه",q:"اختيار اللاعب إشارات مرتبطة بالأداء، مثل حركة القدمين واتجاه المضرب، وتجاهل غيرها يُسمى:",opts:["تحويل الانتباه","اليقظة","انتقاء الانتباه","التغذية الراجعة"],a:2,exp:"انتقاء الانتباه هو اختيار المثيرات المرتبطة بالأداء للتركيز عليها دون غيرها."},
+{topic:"تحويل الانتباه",q:"بعد تنفيذ ضربة، ينقل اللاعب تركيزه سريعًا إلى ملعب المنافس لملاحظة الاستجابة التالية. ما المهارة المستخدمة؟",opts:["الانتباه الجامد","الاسترخاء","الانتباه الداخلي الواسع","تحويل الانتباه"],a:3,exp:"تحويل الانتباه هو نقل التركيز من مثير أو جانب من الأداء إلى مثير آخر مهم للموقف."},
+{topic:"تحسين التركيز",q:"أي أسلوب من الأساليب المذكورة في المادة يساعد على تحسين تركيز الانتباه أثناء اللعب؟",opts:["استخدام كلمات الترميز والتركيز في الأداء الراهن","الانشغال بنتيجة المباراة قبل انتهائها","تحليل كل حركة سابقة أثناء اللعب","تجاهل الروتين السابق للأداء دائمًا"],a:0,exp:"تذكر المادة كلمات الترميز، والتركيز في الأداء الراهن، والنظام الروتيني قبل الأداء ضمن توجيهات تحسين التركيز."},
+{topic:"التدريب على المهارات العقلية",q:"ما الترتيب الصحيح لمراحل برنامج التدريب على المهارات العقلية الوارد في المادة؟",opts:["التدريب ثم التقييم ثم التعميم ثم التعليم","التقييم ثم التعليم ثم اكتساب المهارة ثم الممارسة والدمج","التعليم ثم التعميم ثم التقييم ثم الاكتساب","الاكتساب ثم التقييم ثم التعليم ثم التوقف"],a:1,exp:"يمر البرنامج بالتقييم، ثم المرحلة التعليمية، ثم اكتساب المهارات، ثم ممارستها ودمجها في التدريب والمنافسة."},
+{topic:"التحكم الانفعالي",q:"وفق المادة، ما المستوى الذي يرتبط غالبًا بالأداء الجيد والنهوض المناسب في المنافسة؟",opts:["غياب الانفعال تمامًا في كل الظروف","أعلى مستوى ممكن من القلق دائمًا","مستوى معتدل من القلق","التفكير المستمر في الأخطاء الماضية"],a:2,exp:"تشير المادة إلى أن الأداء الجيد يحدث عندما يكون اللاعب في مستوى معتدل من القلق، مع أهمية التحكم الانفعالي."}
+];
+let current=0, answers=Array(questions.length).fill(null), confirmed=Array(questions.length).fill(false), studentName="", studentId="";
+const $=id=>document.getElementById(id);
+$("studentForm").addEventListener("submit",function(event){
+event.preventDefault();
+const name=$("studentName").value.trim(), id=$("studentId").value.trim();
+if(!name||!id){$("formError").textContent="من فضلك أدخل اسم الطالب والرقم الأكاديمي قبل بدء الاختبار.";$("formError").classList.remove("hidden");return;}
+studentName=name;studentId=id;$("formError").classList.add("hidden");$("welcome").textContent="الطالب: "+studentName+" — الرقم الأكاديمي: "+studentId;
+$("startPanel").classList.add("hidden");$("quizPanel").classList.remove("hidden");renderQuestion();
+});
+function renderQuestion(){
+const q=questions[current];$("counter").textContent=`السؤال ${current+1} من ${questions.length}`;$("progressBar").style.width=((current+1)/questions.length*100)+"%";$("topicLabel").textContent=q.topic;$("questionText").textContent=q.q;$("options").innerHTML="";
+q.opts.forEach((opt,i)=>{const label=document.createElement("label");label.className="option"+(answers[current]===i?" selected":"");const radio=document.createElement("input");radio.type="radio";radio.name="answer";radio.value=i;radio.checked=answers[current]===i;radio.disabled=confirmed[current];radio.addEventListener("change",()=>{answers[current]=i;renderQuestion();});const span=document.createElement("span");span.textContent=opt;label.append(radio,span);if(!confirmed[current])label.addEventListener("click",()=>{answers[current]=i;renderQuestion();});$("options").appendChild(label);});
+const fb=$("feedback");
+if(confirmed[current]){fb.className="feedback "+(answers[current]===q.a?"good":"bad");fb.textContent=(answers[current]===q.a?"إجابة صحيحة. ":"إجابة غير صحيحة. الإجابة الصحيحة: "+q.opts[q.a]+". ")+q.exp;$("answeredLabel").textContent="تمت الإجابة";$("nextBtn").textContent=current===questions.length-1?"عرض النتيجة":"السؤال التالي";$("nextBtn").disabled=false;}
+else{fb.className="feedback hidden";$("answeredLabel").textContent=answers[current]===null?"لم تتم الإجابة":"تم اختيار إجابة";$("nextBtn").textContent="تأكيد الإجابة";$("nextBtn").disabled=answers[current]===null;}
+$("prevBtn").disabled=current===0;
+}
+$("nextBtn").addEventListener("click",()=>{if(!confirmed[current]){if(answers[current]===null)return;confirmed[current]=true;renderQuestion();return;}if(current<questions.length-1){current++;renderQuestion();}else showResult();});
+$("prevBtn").addEventListener("click",()=>{if(current>0){current--;renderQuestion();}});
+function showResult(){
+$("quizPanel").classList.add("hidden");$("resultPanel").classList.remove("hidden");const score=questions.reduce((n,q,i)=>n+(answers[i]===q.a?1:0),0),pct=Math.round(score/questions.length*100);
+$("resultStudent").textContent=studentName+" — الرقم الأكاديمي: "+studentId;$("scoreText").textContent=score+" / "+questions.length+" ("+pct+"%)";
+$("resultMessage").textContent=pct>=90?"ممتاز! استيعاب قوي للمادة.":pct>=70?"جيد جدًا، راجع النقاط التي أخطأت فيها.":pct>=50?"أداء مقبول؛ راجع التغذية الراجعة لتحسين مستواك.":"راجع المادة ثم أعد المحاولة.";
+$("review").innerHTML="<h3>مراجعة الإجابات</h3>";
+questions.forEach((q,i)=>{const div=document.createElement("div");div.className="review-item";const title=document.createElement("strong");title.textContent=(i+1)+". "+q.q;div.appendChild(title);const your=document.createElement("p");your.textContent="إجابتك: "+q.opts[answers[i]];your.className=answers[i]===q.a?"correct":"wrong";div.appendChild(your);const correct=document.createElement("p");correct.className="correct";correct.textContent="الإجابة الصحيحة: "+q.opts[q.a];div.appendChild(correct);const exp=document.createElement("p");exp.className="muted";exp.textContent=q.exp;div.appendChild(exp);$("review").appendChild(div);});
+}
+$("reviewBtn").addEventListener("click",()=>{$("review").classList.toggle("hidden");$("reviewBtn").textContent=$("review").classList.contains("hidden")?"مراجعة الإجابات":"إخفاء المراجعة";});
+$("printBtn").addEventListener("click",()=>window.print());
+$("restartBtn").addEventListener("click",()=>{current=0;answers=Array(questions.length).fill(null);confirmed=Array(questions.length).fill(false);$("resultPanel").classList.add("hidden");$("review").classList.add("hidden");$("startPanel").classList.remove("hidden");$("studentName").value=studentName;$("studentId").value=studentId;});
+</script>
+</body>
+</html>
